@@ -12,19 +12,19 @@ pipeline {
       steps {
         dir('Practical-02') {
           sh '''
-           echo "[INFO] Installing dependencies..."
-           pip3 install --upgrade pip --break-system-packages
-           pip3 install -r requirements.txt pytest --break-system-packages
-           echo "[INFO] Running pytest..."
-           pytest -q
-        '''
+            echo "[INFO] Installing dependencies..."
+            pip3 install --upgrade pip --break-system-packages
+            pip3 install -r requirements.txt pytest --break-system-packages
+            echo "[INFO] Running pytest..."
+            pytest -q
+          '''
         }
       }
     }
 
     stage('Build Docker') {
       steps {
-       dir('Practical-02') {
+        dir('Practical-02') {
           sh '''
             echo "[INFO] Building Docker image..."
             docker build -t ci-web .
