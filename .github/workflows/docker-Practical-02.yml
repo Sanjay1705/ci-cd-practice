@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -20,26 +20,32 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies & pytest
+        working-directory: Practical-02
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt pytest
 
       - name: Run tests (pytest)
+        working-directory: Practical-02
         run: pytest -q
 
       - name: Build Docker image
+        working-directory: Practical-02
         run: docker build -t ci-web .
 
       - name: Run container and health-check
+        working-directory: Practical-02
         run: |
           docker run -d --name ci-web -p 5000:5000 ci-web
-          # give app a moment
           sleep 2
-          # fail if health endpoint not ok (robust JSON check)
           curl -s http://localhost:5000/health | python -c "import sys,json; j=json.load(sys.stdin); assert j.get('status')=='ok'"
-        
+
+      - name: Show container logs (for debugging)
+        if: failure()
+        run: docker logs ci-web || echo "No logs found"
+
       - name: Stop & remove container
         if: always()
         run: |
           docker stop ci-web || true
-          docker rm ci-web   || true
+          docker rm ci-web || true

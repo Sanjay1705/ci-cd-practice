@@ -19,10 +19,11 @@ jobs:
         run: docker run --rm dockerized-app:${{ github.run_number }} > output.txt
 
       - name: Show output (for logs)
+        working-directory: Practical-01
         run: cat output.txt
 
       - name: Upload output as artifact
         uses: actions/upload-artifact@v4
         with:
           name: dockerized-app-output
-          path: output.txt
+          path: Practical-01/output.txt
