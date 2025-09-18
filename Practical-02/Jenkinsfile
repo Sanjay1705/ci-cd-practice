@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh '''
+                python3 -m pip install --upgrade pip
+                pip3 install flask pytest
+                python3 -c "import app; print('App imported successfully!')"
+                '''
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t ci-web .'
+            }
+        }
+
+        stage('Run & Health Check') {
+            steps {
+                sh '''
+                docker run -d --name ci-web -p 5000:5000 ci-web
+                sleep 2
+                curl -f http://localhost:5000/health
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker rm -f ci-web || true'
+        }
+    }
+}
