@@ -11,9 +11,8 @@ FROM jenkins/jenkins:lts
 USER root
 
 RUN apt-get update && \
-    apt-get install -y docker.io && \
+    apt-get install -y docker.io git && \
+    usermod -aG docker jenkins && \
     apt-get clean
-
-RUN apt-get install -y git
-
 USER jenkins
+
