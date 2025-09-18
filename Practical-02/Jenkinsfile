@@ -9,24 +9,14 @@ pipeline {
     }
 
     stage('Test') {
-    steps {
-      sh '''
-        pip3 install --upgrade pip
-        pip3 install -r requirements.txt pytest
-        pytest -q
-      '''
-      }
-    }
-
-    stage('Setup Python Env') {
       steps {
         sh '''
-          sudo apt-get update
-          sudo apt-get install -y python3.11-venv
+          pip3 install --upgrade pip
+          pip3 install -r requirements.txt pytest
+          pytest -q
         '''
       }
     }
-
 
     stage('Build Docker') {
       steps {
@@ -47,7 +37,7 @@ pipeline {
 
   post {
     always {
-      sh 'docker ps -a | grep ci-web && docker stop ci-web && docker rm ci-web || true'
+      sh 'docker stop ci-web || true; docker rm ci-web || true'
     }
   }
 }
