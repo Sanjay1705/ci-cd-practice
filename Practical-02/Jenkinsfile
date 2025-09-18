@@ -37,11 +37,22 @@ pipeline {
       steps {
         dir('Practical-02') {
           sh '''
+            echo "[INFO] Cleaning up any existing ci-web container..."
+            docker rm -f ci-web || true
+            
             echo "[INFO] Running container..."
             docker run -d --name ci-web -p 5000:5000 ci-web
-            sleep 5
+            
             echo "[INFO] Checking health endpoint..."
-            curl -s http://localhost:5000/health | python3 -c "import sys,json; j=json.load(sys.stdin); assert j.get('status')=='ok'"
+            for i in {1..10}; do
+              sleep 2
+              if curl -s http://localhost:5000/health | python3 -c "import sys,json; j=json.load(sys.stdin); assert j.get('status')=='ok'"; then
+                echo "[INFO] Health check passed"
+                exit 0
+              fi
+            done
+            echo "[ERROR] Health check failed"
+            exit 1
           '''
         }
       }
