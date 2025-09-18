@@ -8,22 +8,22 @@ pipeline {
             }
         }
 
-    stage('Test') {
-        agent {
-            docker {
-                image 'python:3.11'
+        stage('Test') {
+            agent {
+                docker {
+                    image 'python:3.11'
+                }
+            }
+            steps {
+                sh '''
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                    pip install pytest
+                    python -c "import app; print('App imported successfully!')"
+                    pytest test_app.py
+                '''
             }
         }
-        steps {
-            sh '''
-                pip install --upgrade pip
-                pip install -r requirements.txt
-                pip install pytest
-                python -c "import app; print('App imported successfully!')"
-                pytest test_app.py
-            '''
-        }
-    }
 
         stage('Build Docker Image') {
             steps {
