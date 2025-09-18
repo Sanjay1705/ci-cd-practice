@@ -53,7 +53,7 @@ pipeline {
       sh '''
         echo "[INFO] Cleaning up containers..."
         docker stop ci-web || true
-        docker rm ci-web || true
+        docker rm -f ci-web || true
       '''
     }
   }
