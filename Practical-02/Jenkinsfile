@@ -10,34 +10,40 @@ pipeline {
 
     stage('Test') {
       steps {
-        sh '''
-          echo "[INFO] Installing dependencies..."
-          pip3 install --upgrade pip --break-system-packages
-          pip3 install -r requirements.txt pytest --break-system-packages
-          echo "[INFO] Running pytest..."
-          pytest -q
+        dir('Practical-02') {
+          sh '''
+           echo "[INFO] Installing dependencies..."
+           pip3 install --upgrade pip --break-system-packages
+           pip3 install -r requirements.txt pytest --break-system-packages
+           echo "[INFO] Running pytest..."
+           pytest -q
         '''
+        }
       }
     }
 
     stage('Build Docker') {
       steps {
-        sh '''
-          echo "[INFO] Building Docker image..."
-          docker build -t ci-web .
-        '''
+       dir('Practical-02') {
+          sh '''
+            echo "[INFO] Building Docker image..."
+            docker build -t ci-web .
+          '''
+        }
       }
     }
 
     stage('Run & Health-check') {
       steps {
-        sh '''
-          echo "[INFO] Running container..."
-          docker run -d --name ci-web -p 5000:5000 ci-web
-          sleep 5
-          echo "[INFO] Checking health endpoint..."
-          curl -s http://localhost:5000/health | python3 -c "import sys,json; j=json.load(sys.stdin); assert j.get('status')=='ok'"
-        '''
+        dir('Practical-02') {
+          sh '''
+            echo "[INFO] Running container..."
+            docker run -d --name ci-web -p 5000:5000 ci-web
+            sleep 5
+            echo "[INFO] Checking health endpoint..."
+            curl -s http://localhost:5000/health | python3 -c "import sys,json; j=json.load(sys.stdin); assert j.get('status')=='ok'"
+          '''
+        }
       }
     }
   }
