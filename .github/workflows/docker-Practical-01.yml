@@ -11,10 +11,10 @@ on:
     paths:
       - 'Practical-01/**'
       - '.github/workflows/docker-Practical-01.yml'
-jobs:
-  build-and-run:
-    runs-on: ubuntu-latest
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -23,6 +23,13 @@ jobs:
         working-directory: Practical-01
         run: docker build -t dockerized-app:${{ github.run_number }} .
 
+  run:
+    runs-on: ubuntu-latest
+    needs: build  
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Run container and save stdout to file
         working-directory: Practical-01
         run: docker run --rm dockerized-app:${{ github.run_number }} > output.txt
@@ -30,6 +37,13 @@ jobs:
       - name: Show output (for logs)
         working-directory: Practical-01
         run: cat output.txt
+
+  upload:
+    runs-on: ubuntu-latest
+    needs: run  
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Upload output as artifact
         uses: actions/upload-artifact@v4
