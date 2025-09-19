@@ -14,7 +14,7 @@ on:
       - '.github/workflows/docker-Practical-02.yml'
 
 jobs:
-  test:
+  build-run-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -35,23 +35,9 @@ jobs:
         working-directory: Practical-02
         run: python -m pytest -q
 
-  build:
-    runs-on: ubuntu-latest
-    needs: test   
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Build Docker image
         working-directory: Practical-02
         run: docker build -t ci-web .
-
-  run:
-    runs-on: ubuntu-latest
-    needs: build  
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Run container and health-check
         working-directory: Practical-02
