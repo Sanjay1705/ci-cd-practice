@@ -63,8 +63,7 @@ pipeline {
     always {
       sh '''
         echo "[INFO] Cleaning up containers..."
-        docker stop ci-web || true
-        docker rm -f ci-web || true
+        docker ps -a --format "{{.Names}}" | grep -w ci-web && docker rm -f ci-web || echo "[INFO] ci-web already removed"
       '''
     }
   }
