@@ -45,7 +45,7 @@ pipeline {
 
             echo "[INFO] Checking health endpoint..."
             for i in {1..10}; do
-              sleep 2
+              sleep 10
               STATUS=$(docker inspect -f '{{.State.Status}}' ci-web)
               echo "Attempt $i: Container status = $STATUS"
               RESPONSE=$(curl -s http://localhost:5000/health)
