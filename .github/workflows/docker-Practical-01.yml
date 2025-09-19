@@ -1,7 +1,16 @@
 name: Dockerized App CI
 
-on: [push, pull_request]
-
+on: 
+  push:
+    branches: [ main ]
+    paths:
+      - 'Practical-01/**'
+      - '.github/workflows/docker-Practical-01.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'Practical-01/**'
+      - '.github/workflows/docker-Practical-01.yml'
 jobs:
   build-and-run:
     runs-on: ubuntu-latest

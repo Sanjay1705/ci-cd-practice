@@ -3,8 +3,14 @@ name: CI - Test Build Health-check
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'Practical-02/**'
+      - '.github/workflows/docker-Practical-02.yml'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'Practical-02/**'
+      - '.github/workflows/docker-Practical-02.yml'
 
 jobs:
   build-and-test:
