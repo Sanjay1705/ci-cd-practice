@@ -11,6 +11,7 @@ def hello():
 def health():
     return jsonify(status="ok")
 
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5002))
     print(f"Starting Flask on port {port}")
