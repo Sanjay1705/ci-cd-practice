@@ -41,14 +41,14 @@ pipeline {
             docker rm -f ci-web || true
 
             echo "[INFO] Running container..."
-            docker run -d --name ci-web -p 5000:5000 ci-web
+            docker run -d --name ci-web -p 5002:5000 ci-web
 
             echo "[INFO] Checking health endpoint..."
             for i in {1..10}; do
               sleep 2
               STATUS=$(docker inspect -f '{{.State.Status}}' ci-web)
               echo "Attempt $i: Container status = $STATUS"
-              RESPONSE=$(curl -s http://localhost:5000/health)
+              RESPONSE=$(curl -s http://localhost:5002/health)
               echo "Attempt $i: Response = $RESPONSE"
               if echo "$RESPONSE" | python3 -c "import sys,json; j=json.load(sys.stdin); assert j.get('status')=='ok'" 2>/dev/null; then
                 echo "[INFO] Health check passed"
